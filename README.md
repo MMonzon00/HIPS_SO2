@@ -19,7 +19,7 @@ python3 verify_integrity.py /path/to/file
 
 ## Function: `verify_logged_in_users`
 
-### Description
+### Description:
 The `verify_logged_in_users` function is designed to check the users currently logged into the system and their respective origins. This is achieved by executing the `who` command, which lists all users currently logged in along with their terminal, login time, and the host address.
 
 ### Usage:
