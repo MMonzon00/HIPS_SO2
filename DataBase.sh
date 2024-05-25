@@ -3,7 +3,7 @@
 # Variables
 DB_NAME="HIPS_LOGS"
 DB_USER="admin"
-DB_PASSWORD="42Ic£i<p201qp]z#"
+DB_PASSWORD="admin123"
 PG_VERSION="13"
 
 # Import the PostgreSQL signing key
