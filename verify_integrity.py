@@ -1,4 +1,5 @@
 import hashlib
+import sys
 from datetime import datetime
 
 def read_file(file_path):
@@ -59,14 +60,17 @@ def verify_and_hash_file(file_path, hash_file):
         status = "NOT MODIFIED"
 
     store_hash(file_path, current_hash, hash_file, status)
+    print(f"{file_path} hash stored with status: {status}")
 
 def main():
-    passwd_file = "/etc/passwd"
-    shadow_file = "/etc/shadow"
+    if len(sys.argv) != 2:
+        print("Usage: python3 verify_integrity_files.py <file_path>")
+        sys.exit(1)
+
+    file_path = sys.argv[1]
     hash_file = "/var/log/file_hashes.log"  # File to store the hashes
 
-    verify_and_hash_file(passwd_file, hash_file)
-    verify_and_hash_file(shadow_file, hash_file)
+    verify_and_hash_file(file_path, hash_file)
 
 if __name__ == "__main__":
     main()
