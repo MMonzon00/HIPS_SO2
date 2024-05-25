@@ -1,5 +1,3 @@
-import unittest
-from unittest.mock import patch
 import subprocess
 
 def verify_logged_in_users():
