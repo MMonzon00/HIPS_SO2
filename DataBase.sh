@@ -6,18 +6,6 @@ DB_USER="admin"
 DB_PASSWORD="admin123"
 PG_VERSION="13"
 
-# Import the PostgreSQL signing key
-wget -qO - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-
-# Add the PostgreSQL repository
-echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-
-# Update package list
-sudo apt-get update
-
-# Install PostgreSQL
-sudo apt-get install -y "postgresql-$PG_VERSION" "postgresql-contrib"
-
 # Start PostgreSQL service
 sudo systemctl start postgresql
 sudo systemctl enable postgresql
