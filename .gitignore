@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+venv/
+Lib/
+Scripts/
+pyvenv.cfg
+venv/
