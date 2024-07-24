@@ -42,7 +42,7 @@ def trigger_alarm(file_path):
     """Generate an alarm for the modified file."""
     alarm_message = f"ALERT: File {file_path} has been modified!"
     log_event(alarm_message)
-    notify_admin('Modified File',alarm_message)
+    notify_admin(alarm_message)
 
 def verify_and_hash_file(file_path, hash_file):
     """Verify the file, generate its hash, compare with the last hash, and store the new hash."""
@@ -124,7 +124,7 @@ def hash_bin():
                 file_hash = current_hashes[file_path]
                 timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 log.write(f"{timestamp} SUCCESS {file_path}: {file_hash}\n")
-        notify_admin('Bin modified',f"Modified files detected: {', '.join(modified_files)}")
+        notify_admin(f"Modified files detected: {', '.join(modified_files)}")
     
     return modified_files
 

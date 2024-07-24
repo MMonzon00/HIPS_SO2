@@ -34,18 +34,22 @@ def analyze_failed_attempts() -> Tuple[Dict[str, int], Dict[str, int]]:
 
 def log_user_attempts(user_attempts: Dict[str, int]):
     """Log and notify for users with repetitive failed attempts."""
+    user_list=[]
     for user, attempts in user_attempts.items():
         if attempts > 5:  # Threshold for repetitive attempts
-            message = f"User {user} has {attempts} failed login attempts."
+            message = f"User {user} has {attempts} failed login attempts.\n"
             log_event(message)
-            # notify_admin(message)
-            print('hola')
+            user_list.append(message)
+    notify_admin(''.join(user_list))
 
 def log_ip_attempts(ip_attempts: Dict[str, int]):
     """Log and notify for IPs with multiple failed attempts."""
+    ip_list=[]
     for ip, attempts in ip_attempts.items():
         if attempts > 5:  # Threshold for multiple user attempts
-            message = f"IP {ip} has {attempts} failed login attempts."
+            message = f"IP {ip} has {attempts} failed login attempts.\n"
             log_event(message)
-            notify_admin(message)
+            ip_list.append(message)
+    notify_admin(''.join(ip_list))
 
+analyze_failed_attempts()
