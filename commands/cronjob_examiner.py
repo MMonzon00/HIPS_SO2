@@ -15,7 +15,6 @@ def list_user_crontab(username):
         error_message = f"Error listing crontab for user '{username}': {e}"
         print(error_message)  # Print the error for immediate feedback
         log_event(error_message)  # Log the error
-        notify_admin(error_message)  # Notify the admin about the error
         return None
 
 def list_system_cron():
@@ -40,7 +39,6 @@ def list_system_cron():
         error_message = f"Error listing system-wide cronjobs: {e}"
         print(error_message)  # Print the error for immediate feedback
         log_event(error_message)  # Log the error
-        notify_admin(error_message)  # Notify the admin about the error
         return None
 
 if __name__ == "__main__":

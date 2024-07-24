@@ -35,34 +35,15 @@ def quarantine_files(files):
 
     # Move suspicious files to quarantine
     for file_path in files:
+        log_message=[]
         try:
             shutil.move(file_path, os.path.join(quarantine_folder, os.path.basename(file_path)))
-            log_message = f"Moved {file_path} to {quarantine_folder}"
-            print(log_message)  # Print the action for immediate feedback
-            log_event(log_message)  # Log the action
-            notify_admin(log_message)  # Notify the admin about the action
+            log_message.append(f"Moved {file_path} to {quarantine_folder}")
+            print(log_message[file_path])  # Print the action for immediate feedback
+            log_event(log_message[file_path])  # Log the action
+              # Notify the admin about the action
         except Exception as e:
             error_message = f"Failed to move {file_path}: {str(e)}"
             print(error_message)  # Print the error for immediate feedback
             log_event(error_message)  # Log the error
-            notify_admin(error_message)  # Notify the admin about the error
-
-# Main function to execute the checks
-def main():
-    suspicious_files = check_tmp_directory()
-
-    if suspicious_files:
-        log_message = "Suspicious files found in /tmp:"
-        log_event(log_message)
-        notify_admin(log_message)
-
-        for file_path in suspicious_files:
-            log_event(f"Suspicious file detected: {file_path}")
-            notify_admin(f"Suspicious file detected: {file_path}")
-
-        # Quarantine the suspicious files
-        quarantine_files(suspicious_files)
-    else:
-        log_message = "No suspicious files found in /tmp"
-        log_event(log_message)
-        notify_admin(log_message)
+    

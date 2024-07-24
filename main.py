@@ -1,6 +1,5 @@
 import sys
 sys.path.insert(1,f"{sys.path[0]}/commands")
-print(sys.path)
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException, status, Request, Form
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
