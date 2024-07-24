@@ -14,7 +14,7 @@ logging.basicConfig(filename='/var/log/hips.log', level=logging.INFO, format='%(
 def log_event(event):
     logging.info(event)
     
-def notify_admin(subject, message):
+def notify_admin(message):
     sender_email = os.getenv("EMAIL_USER")
     receiver_email = os.getenv("EMAIL_RECEIVER")
     smtp_server = "smtp.gmail.com"
@@ -23,7 +23,7 @@ def notify_admin(subject, message):
     smtp_password = os.getenv("EMAIL_PASSWORD")
     
     msg = MIMEText(message)
-    msg['Subject'] = subject
+    msg['Subject'] = 'HIPS Alert'
     msg['From'] = sender_email
     msg['To'] = receiver_email
     

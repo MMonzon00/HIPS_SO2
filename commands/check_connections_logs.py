@@ -38,7 +38,8 @@ def log_user_attempts(user_attempts: Dict[str, int]):
         if attempts > 5:  # Threshold for repetitive attempts
             message = f"User {user} has {attempts} failed login attempts."
             log_event(message)
-            notify_admin(message)
+            # notify_admin(message)
+            print('hola')
 
 def log_ip_attempts(ip_attempts: Dict[str, int]):
     """Log and notify for IPs with multiple failed attempts."""

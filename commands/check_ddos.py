@@ -9,7 +9,6 @@ def check_DDOS_attack_dns():
         final_message = ''
         ip_blocked = False
         blocked_ips_list = []
-
         for line in file:
             attacker_ip = line.split()[2]
             victim_ip = line.split()[4][:-1]  # Remove the ':' at the end of the victim's IP
@@ -21,12 +20,11 @@ def check_DDOS_attack_dns():
                         message = f'Blocked IP: {attacker_ip} due to suspected attack on IP: {victim_ip}'
                         final_message += message + '\n'
                         blocked_ips_list.append(attacker_ip)
-
                         # Log the event
                         log_event(message)
                         
                         # Notify the administrator
-                        notify_admin('DDOS Attack',message)
+                        notify_admin(message)
 
                         # Block IP (implement the actual blocking logic here)
                         # os.system(f"sudo iptables -A INPUT -s {attacker_ip} -j DROP")
@@ -39,4 +37,8 @@ def check_DDOS_attack_dns():
     else:
         no_attack_message = 'No DDOS-like behavior detected'
         log_event(no_attack_message)  # Log that no DDOS-like behavior was detected
+
         return no_attack_message
+
+
+check_DDOS_attack_dns()
