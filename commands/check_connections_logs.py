@@ -51,5 +51,3 @@ def log_ip_attempts(ip_attempts: Dict[str, int]):
             log_event(message)
             ip_list.append(message)
     notify_admin(''.join(ip_list))
-
-analyze_failed_attempts()

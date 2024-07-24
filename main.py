@@ -177,15 +177,7 @@ async def check_sniffers(username: str = Depends(get_current_username)):
         # Perform checks using the imported function
         results = check_for_sniffers.perform_checks()
 
-        # Format the output to be more readable
-        formatted_results = "### Sniffer Check Results\n\n"
-        if results:
-            for result in results:
-                formatted_results += f"- {result}: {results[result]}\n"
-        else:
-            formatted_results += "No sniffers detected."
-
-        return PlainTextResponse(formatted_results)
+        return PlainTextResponse(results)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
 

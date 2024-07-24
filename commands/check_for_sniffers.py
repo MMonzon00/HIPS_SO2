@@ -77,7 +77,14 @@ def perform_checks():
     log_event("Verification complete.")
     results['status'] = "Verification complete."
 
+    # Format the output to be more readable
+    formatted_results = "### Sniffer Check Results\n\n"
+    if results:
+        for result in results:
+            formatted_results += f"- {result}: {results[result]}\n"
+    else:
+        formatted_results += "No sniffers detected."
     # Notify the admin about the results
-    notify_admin(results)
+    notify_admin(formatted_results)
     
-    return results
+    return formatted_results
