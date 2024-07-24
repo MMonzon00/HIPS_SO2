@@ -1,30 +1,50 @@
 # HIPS-SO2
-Implementacion de HIPS(Host Intrusion Prevention System)
 
-## Function: `verify_and_hash_file`
+## Descripción
+Este proyecto implementa un Sistema de Prevención de Intrusiones en el Host (HIPS) para monitorear y prevenir actividades sospechosas en un sistema.
 
-### Description:
-The `verify_and_hash_file(file_path, hash_file)` function verifies the integrity of a specific binary file, calculates its SHA-256 hash, and compares it with the previously stored hash in a log file. Additionally, it records the new hash along with a timestamp and a status indicating whether the file has been modified or not.
+## Requisitos
+- Python 3.x
+- FastAPI
+- Uvicorn
+- Otros paquetes necesarios especificados en `requirements.txt`
 
-### Parameters:
-- `file_path`: The path of the binary file to be verified.
-- `hash_file`: The path of the log file where hashes and their status are stored.
+## Instalación
 
-### Usage:
-The script can be executed from the terminal by providing the path of the file to be verified as an argument. For example:
-
+### Clonar el repositorio
 ```bash
-python3 verify_integrity.py /path/to/file
+git clone https://github.com/MMonzon00/HIPS_SO2.git
+cd HIPS-SO2
 ```
 
-## Function: `verify_logged_in_users`
-
-### Description:
-The `verify_logged_in_users` function is designed to check the users currently logged into the system and their respective origins. This is achieved by executing the `who` command, which lists all users currently logged in along with their terminal, login time, and the host address.
-
-### Usage:
-The script can be executed from the terminal. For example:
-
+### Crear y activar un entorno virtual
 ```bash
-python3 verify_connections.py 
+python3 -m venv venv
+source venv/bin/activate
+```
+
+### Instalar dependencias
+```bash
+pip install -r requirements.txt
+```
+
+### Configuración
+Asegurarse de configurar las variables de entorno necesarias. Puedes usar un archivo .env en el directorio del repositorio.
+
+### Variables de Entorno
+Crea un archivo .env en el directorio raíz del proyecto con las siguientes variables:
+
+```makefile
+BASIC_AUTH_USERNAME=username
+BASIC_AUTH_PASSWORD=password
+EMAIL_USER=emailsender@mail.com
+EMAIL_PASSWORD=email_sender_password
+EMAIL_RECEIVER=emailreceiver@mail.com
+```
+### Ejecución
+Se necesita tener privilegios de sudo para correr el proyecto.
+
+### Iniciar la aplicación
+```bash
+sudo python main.py
 ```
