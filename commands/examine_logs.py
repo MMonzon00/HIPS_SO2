@@ -26,6 +26,5 @@ def analyze_access_log():
     except Exception as e:
         error_message = f"Error analyzing access log: {e}"
         log_event(error_message)  # Log the error
-        notify_admin(error_message)  # Notify the administrator about the error
 
     return page_errors

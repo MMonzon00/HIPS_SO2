@@ -25,7 +25,6 @@ def list_high_memory_processes(threshold):
     except subprocess.CalledProcessError as e:
         error_message = f"Error retrieving process list: {e}"
         log_event(error_message)
-        notify_admin(error_message)
         return []
 
 def kill_process(pid):
@@ -33,11 +32,8 @@ def kill_process(pid):
     try:
         subprocess.run(['kill', '-9', pid], check=True)
         success_message = f"Killed process with PID {pid}"
-        print(success_message)
         log_event(success_message)
-        notify_admin(success_message)
     except subprocess.CalledProcessError as e:
         error_message = f"Error killing process {pid}: {e}"
         print(error_message)
         log_event(error_message)
-        notify_admin(error_message)
