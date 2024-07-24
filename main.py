@@ -184,13 +184,7 @@ async def check_sniffers(username: str = Depends(get_current_username)):
 @app.get("/examine_logs", response_class=PlainTextResponse)
 async def examine_logs(username: str = Depends(get_current_username)):
     try:
-        httpd_access_errors = examineLogs.analyze_access_log() 
-        result = "HTTP Access Errors:\n"
-        for ip, count in httpd_access_errors.items():
-            if count > 5:
-                result += f"IP {ip} has {count} page errors. Blocking IP...\n"
-                # Add logic to block IP
-        
+        result = examineLogs.analyze_access_log() 
         return PlainTextResponse(result)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")

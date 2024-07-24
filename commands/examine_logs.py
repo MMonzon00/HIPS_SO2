@@ -15,16 +15,16 @@ def analyze_access_log():
                         ip = ip_match.group(1)
                         page_errors[ip] += 1
 
-        # Log the analysis results
-        log_message = "Page errors by IP:\n"
+        result = "HTTP Access Errors:\n"
         for ip, count in page_errors.items():
-            log_message += f"IP {ip} had {count} 404 errors.\n"
-        
-        log_event(log_message)  # Log the detailed analysis
-        notify_admin(log_message)  # Notify the administrator about the errors
+            if count > 5:
+                result += f"IP {ip} has {count} page errors. Blocking IP...\n"
+                log_event(result)
+                # Add logic to block IP
+                # os.system(f"sudo iptables -A INPUT -s {ip} -j DROP")
 
     except Exception as e:
         error_message = f"Error analyzing access log: {e}"
         log_event(error_message)  # Log the error
-
-    return page_errors
+    notify_admin(result)
+    return result

@@ -6,7 +6,7 @@ def check_mail_queue():
     command_output = os.popen(command).read()
     final_message = ''
     
-    if "queue is empty" in command_output:
+    if "" in command_output:
         final_message += "The mail queue is empty\n"
         log_event(final_message)
     else:
@@ -22,4 +22,3 @@ def check_mail_queue():
         final_message += "Not many emails were found in the queue\n"
         log_event(final_message)
     return final_message
-
