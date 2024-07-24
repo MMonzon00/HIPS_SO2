@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(1,f"{sys.path[0]}/commands")
+print(sys.path)
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException, status, Request, Form
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -7,7 +10,11 @@ from starlette.responses import PlainTextResponse
 from typing import Optional
 import os
 from dotenv import load_dotenv
-from commands import hash_bin, verify_connections, check_for_sniffers, manage_processes, check_tmp, cronjob_examiner, check_connections_logs
+import hash_bin, verify_connections, check_for_sniffers, manage_processes, check_tmp, cronjob_examiner, check_connections_logs
+import examine_logs as examineLogs, check_mail_queue as cmq
+import check_ddos
+# from logging_notification import log_event, notify_admin
+
 
 # Cargar variables de entorno desde el archivo .env
 load_dotenv()
@@ -175,7 +182,7 @@ async def check_sniffers(username: str = Depends(get_current_username)):
         formatted_results = "### Sniffer Check Results\n\n"
         if results:
             for result in results:
-                formatted_results += f"- {result}\n"
+                formatted_results += f"- {result}: {results[result]}\n"
         else:
             formatted_results += "No sniffers detected."
 
@@ -185,14 +192,23 @@ async def check_sniffers(username: str = Depends(get_current_username)):
 
 @app.get("/examine_logs", response_class=PlainTextResponse)
 async def examine_logs(username: str = Depends(get_current_username)):
-    # Código para examinar archivos log
-    return {"status": "Examinación de archivos log completada"}
+    try:
+        httpd_access_errors = examineLogs.analyze_access_log() 
+        result = "HTTP Access Errors:\n"
+        for ip, count in httpd_access_errors.items():
+            if count > 5:
+                result += f"IP {ip} has {count} page errors. Blocking IP...\n"
+                # Add logic to block IP
+        
+        return PlainTextResponse(result)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An unexpected error occurred: {str(e)}")
+
 
 @app.get("/check_mail_queue", response_class=PlainTextResponse)
 async def check_mail_queue(username: str = Depends(get_current_username)):
     # Código para verificar el tamaño de la cola de mails
-    return {"status": "Verificación de tamaño de la cola de mails completada"}
-
+    return cmq.check_mail_queue()
 @app.get("/check_memory_processes", response_class=PlainTextResponse)
 async def check_memory_processes(username: str = Depends(get_current_username), threshold: float = 10.0):
     try:
@@ -232,7 +248,7 @@ async def verify_tmp_directory(username: str = Depends(get_current_username)):
 @app.get("/control_ddos", response_class=PlainTextResponse)
 async def control_ddos(username: str = Depends(get_current_username)):
     # Código para controlar ataque de DDOS
-    return {"status": "Control de ataque de DDOS completado"}
+    return check_ddos.check_DDOS_attack_dns()
 
 @app.get("/examine_cron_jobs", response_class=PlainTextResponse)
 async def list_system_cron_endpoint(username: str = Depends(get_current_username)):

@@ -1,6 +1,7 @@
 import os
 import hashlib
 from datetime import datetime
+from logging_notification import log_event, notify_admin
 
 def read_file(file_path):
     """Read the content of the file."""
@@ -8,7 +9,8 @@ def read_file(file_path):
         with open(file_path, 'rb') as f:
             return f.read()
     except FileNotFoundError:
-        print(f"Error: {file_path} not found.")
+        error_message = f"Error: {file_path} not found."
+        log_event(error_message)
         return None
 
 def generate_hash(file_content):
@@ -32,12 +34,15 @@ def get_last_hash(file_path, hash_file):
                 if file_path in line:
                     last_hash = line.strip().split()[-1]
     except FileNotFoundError:
-        print(f"Error: {hash_file} not found.")
+        error_message = f"Error: {hash_file} not found."
+        log_event(error_message)
     return last_hash
 
 def trigger_alarm(file_path):
     """Generate an alarm for the modified file."""
-    print(f"ALERT: File {file_path} has been modified!")
+    alarm_message = f"ALERT: File {file_path} has been modified!"
+    log_event(alarm_message)
+    notify_admin('Modified File',alarm_message)
 
 def verify_and_hash_file(file_path, hash_file):
     """Verify the file, generate its hash, compare with the last hash, and store the new hash."""
@@ -49,14 +54,17 @@ def verify_and_hash_file(file_path, hash_file):
     last_hash = get_last_hash(file_path, hash_file)
 
     if last_hash is None:
-        print(f"No previous hash found for {file_path}. Storing the current hash.")
+        log_message = f"No previous hash found for {file_path}. Storing the current hash."
+        log_event(log_message)
         status = "NEW"
     elif current_hash != last_hash:
-        print(f"File {file_path} has been modified.")
+        log_message = f"File {file_path} has been modified."
+        log_event(log_message)
         status = "MODIFIED"
         trigger_alarm(file_path)
     else:
-        print(f"File {file_path} has not been modified.")
+        log_message = f"File {file_path} has not been modified."
+        log_event(log_message)
         status = "NOT MODIFIED"
 
     store_hash(file_path, current_hash, hash_file, status)
@@ -99,13 +107,14 @@ def hash_bin():
             except Exception as e:
                 file_hash = str(e)
                 status = "FAILURE"
-            
+                log_event(f"Failed to read or hash file {file_path}: {file_hash}")
+
             # Check if the file hash has changed
             try:
                 if status == "SUCCESS" and logged_hashes[file_path] != file_hash:
                     modified_files.append(file_path)
             except KeyError:
-                print(f'New file detected: {file_path}')
+                log_event(f'New file detected: {file_path}')
                 modified_files.append(file_path)
     
     # Update the log file only if modifications are detected
@@ -115,26 +124,25 @@ def hash_bin():
                 file_hash = current_hashes[file_path]
                 timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 log.write(f"{timestamp} SUCCESS {file_path}: {file_hash}\n")
+        notify_admin('Bin modified',f"Modified files detected: {', '.join(modified_files)}")
     
     return modified_files
 
 def verify_integrity_files():
-    
     return_list = []
     modified_files = hash_bin()
     if modified_files:
-        print("Modified files:")
-    for file in modified_files:
-        return_list.append(file)
+        return_list.append("Modified files:")
+        return_list.extend(modified_files)
     else:
-            return_list.append("No modifications detected in the /bin directory.")
+        return_list.append("No modifications detected in the /bin directory.")
 
-    file_path = ["/etc/passwd","/etc/shadow"]
+    file_path = ["/etc/passwd", "/etc/shadow"]
     hash_file = "/var/log/file_hashes.log"  # File to store the hashes
 
     passwd_return = verify_and_hash_file(file_path[0], hash_file)
     shadow_return = verify_and_hash_file(file_path[1], hash_file)
 
-    return_list.extend([passwd_return,shadow_return])
+    return_list.extend([passwd_return, shadow_return])
 
     return return_list
