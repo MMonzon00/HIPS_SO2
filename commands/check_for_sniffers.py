@@ -1,14 +1,8 @@
 import os
 import shutil
 import psutil
-import logging
+from logging_notification import log_event, notify_admin
 
-# Logging configuration
-logging.basicConfig(filename='/var/log/check_sniffers.log', level=logging.INFO, format='%(asctime)s - %(message)s')
-
-# Function to log events
-def log_event(event):
-    logging.info(event)
 
 # Function to check if any network interface is in promiscuous mode
 def check_promiscuous_mode():
@@ -59,7 +53,7 @@ def perform_checks():
         results['promiscuous_interfaces'] = promiscuous_interfaces
     else:
         log_event("No network interface is in promiscuous mode.")
-        results['promiscuous_interfaces'] = ["No network interface is in promiscuous mode."]
+        results['promiscuous_interfaces'] = "No network interface is in promiscuous mode."
 
     # Check for installed packet capture tools
     tools = ["tcpdump", "wireshark", "tshark", "ethereal"]
@@ -82,5 +76,15 @@ def perform_checks():
 
     log_event("Verification complete.")
     results['status'] = "Verification complete."
+
+    # Format the output to be more readable
+    formatted_results = "### Sniffer Check Results\n\n"
+    if results:
+        for result in results:
+            formatted_results += f"- {result}: {results[result]}\n"
+    else:
+        formatted_results += "No sniffers detected."
+    # Notify the admin about the results
+    notify_admin(formatted_results)
     
-    return results
+    return formatted_results

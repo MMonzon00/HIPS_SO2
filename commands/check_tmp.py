@@ -1,6 +1,8 @@
 import os
 import shutil
 import logging
+from logging_notification import log_event, notify_admin
+
 
 # Logging configuration
 logging.basicConfig(filename='/var/log/check_tmp.log', level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -33,8 +35,15 @@ def quarantine_files(files):
 
     # Move suspicious files to quarantine
     for file_path in files:
+        log_message=[]
         try:
             shutil.move(file_path, os.path.join(quarantine_folder, os.path.basename(file_path)))
-            print(f"Moved {file_path} to {quarantine_folder}")
+            log_message.append(f"Moved {file_path} to {quarantine_folder}")
+            print(log_message[file_path])  # Print the action for immediate feedback
+            log_event(log_message[file_path])  # Log the action
+              # Notify the admin about the action
         except Exception as e:
-            print(f"Failed to move {file_path}: {str(e)}")
+            error_message = f"Failed to move {file_path}: {str(e)}"
+            print(error_message)  # Print the error for immediate feedback
+            log_event(error_message)  # Log the error
+    
